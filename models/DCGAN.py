@@ -1,7 +1,7 @@
 import tensorflow as tf
-import tf.keras as keras
+import tensorflow.keras as keras
 from tensorflow.keras import layers
-
+import numpy as np
 from base import GAN
 """
 TF 2.0 Implementation of DCGAN to use for baseline testing of PSIG-GAN
@@ -12,7 +12,7 @@ Implements the abstract GAN class specified in base.py
 class DCGAN(GAN):
 
 
-    def __init__(self,latent_shape, output_image_shape, num_gen_images):
+    def __init__(self,latent_shape, output_image_shape, num_gen_images, gen_filter_size,gen_num_channels):
 
         """
         Creates a DCGAN with Keras-based models for both Discriminator and Generator 
@@ -23,10 +23,20 @@ class DCGAN(GAN):
             @param output_image_shape: tuple of ints specifying the generator's output shape. Should be 512x512x3 for RGB based images
             @param num_gen_images: int specifying the batch size of images to be generated
 
+            @param gen_filter_size: int specifying the dimensions of the generator filters (square filter - [gen_filter_size x gen_filter_size])
+            @param gen_num_channels: int specifying the number of output maps of the Conv2DTranpose layers in the generator. 
+                                     The second Conv2DTranspose layer gets (gen_num_channels /2 ), so gen_num_channels must be even
+            
+
         """
 
         self.latent_shape = latent_shape
-        self.output_shape = [num_gen_images, output_image_shape]
+        self.output_shape = output_image_shape
+        self.gen_filter_size = gen_filter_size
+
+        # number of generator channels must be even
+        assert(gen_num_channels % 2 == 0)
+        self.gen_num_channels = gen_num_channels
 
         # Instantiate generator models
         self.generator = self._build_generator()
@@ -53,9 +63,7 @@ class DCGAN(GAN):
 
         discrim_input_shape = self.output_shape
 
-        model = keras.Sequential()
-
-        return model
+        return None
 
     def _build_generator(self):
         
@@ -71,13 +79,35 @@ class DCGAN(GAN):
         - Dense : 
         - Activations: 
 
-
+        Input noise vector size: 
+            self.latent_shape, 1
+        
+        Output image shape: (256x256x3)
         '''
 
         gen_input_shape = self.latent_shape
-
         model = keras.Sequential()
 
+        # Add initial dense layer with output shape (image_shape/2*image_shape/2*3) for an flattened RGB image
+        # We want to recover the original input image shape at the end of the generator - so use output_shape/4 at first
+        # Use BatchNorm and LeakyReLU as activations
+        model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 3) , use_bias=False, input_shape=(1,) ))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+        model.add(layers.Reshape((int(self.output_shape/4),int(self.output_shape/4),3)))
+
+        # Upsample using Conv2D Transpose (DCGAN Architecture) - boost to the number of channels specified in constructor
+        model.add(layers.Conv2DTranspose(self.gen_num_channels, (self.gen_filter_size,self.gen_filter_size),strides=(1,1), padding='same', use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/2), (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # 3 channels for RGB image output
+        model.add(layers.Conv2DTranspose(3, (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False))
         return model 
 
     def train_step(self, num_epochs, fake_data_batch, real_data_batch):
@@ -91,3 +121,12 @@ class DCGAN(GAN):
         @param real_data_batch: 4D tensor containing real images sampled from GrassWeeds repo - [batch_size, img_len, img_wid, num_channels]
         
         """
+
+if __name__ == "__main__":
+
+    thing = DCGAN(100,256,100,10,128)
+    b = np.random.rand(100,1)
+    b = tf.cast(b, tf.float32)
+
+    z = thing.generator(b)
+    print(z.shape)
