@@ -2,7 +2,10 @@ import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras import layers
 import numpy as np
-from base import GAN
+from models.base import GAN
+
+import matplotlib
+import matplotlib.pyplot as plt
 
 import cv2 
 
@@ -38,6 +41,8 @@ class DCGAN(GAN):
         self.output_shape = output_image_shape
         self.gen_filter_size = gen_filter_size
         self.discrim_filter_size = discrim_filter_size
+
+        self.num_gen_images = num_gen_images
 
         # number of generator channels must be even
         assert(gen_num_channels % 2 == 0)
@@ -96,7 +101,6 @@ class DCGAN(GAN):
         Output image shape: (256x256x3)
         '''
 
-        gen_input_shape = self.latent_shape
         model = keras.Sequential()
 
         # Add initial dense layer with output shape (image_shape/2*image_shape/2*3) for an flattened RGB image
@@ -104,7 +108,7 @@ class DCGAN(GAN):
         # Use BatchNorm and LeakyReLU as activations
 
         # (100x1) --> (64*64*3,1) --> (64,64,3) //Upsamples 1D vector into 3D array
-        model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 3) , use_bias=False, input_shape=(1,) ))
+        model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 3) , use_bias=False, input_shape=(self.latent_shape,) ))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
         model.add(layers.Reshape((int(self.output_shape/4),int(self.output_shape/4),3)))
@@ -155,8 +159,7 @@ class DCGAN(GAN):
         return loss_fcn(tf.ones_like(fake_output), fake_output)
 
 
-    @tf.function
-    def train_step(self, real_images,gen_lr, disc_lr):
+    def train_step(self, real_images, gen_lr, disc_lr):
 
         """
         Implements the training routine for the DCGAN framework 
@@ -165,15 +168,19 @@ class DCGAN(GAN):
         @param num_epochs: number of epochs for training
         @param fake_data_batch: 4D tensor containing fake images - [batch_size, img_len, img_wid, num_channels]
         @param real_data_batch: 4D tensor containing real images sampled from GrassWeeds repo - [batch_size, img_len, img_wid, num_channels]
-        @param gen_lr: 
-        @param disc_lr: 
+        @param gen_lr: <<float>> learning rate for generator, used with Adam Optimizer
+        @param disc_lr: <<float>> learning rate for discriminator, used with Adam Optimizer
+
+        @return gen_imgs: <<tf.Tensor>> containing generated images 
         """
 
+        # Adam based optimizers for both discrim/gen
         gen_optimizer = tf.keras.optimizers.Adam(gen_lr)
         disc_optimizer = tf.keras.optimizers.Adam(disc_lr)
 
-        noise = tf.random.normal([self.num_gen_images,self.latent_shape)
-        with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape: 
+        noise = tf.random.normal([self.num_gen_images,self.latent_shape])
+        
+        with tf.GradientTape(persistent=True) as gen_tape, tf.GradientTape(persistent=True) as disc_tape: 
             
             # Create fake images using the differentiable Generator
             # Input: (batch_size, noise_shape)
@@ -184,19 +191,28 @@ class DCGAN(GAN):
             real_output = self.discriminator(real_images,training=True)
             fake_output = self.discriminator(gen_imgs,training=True)
 
+            # Loss with flipped labels for generator 
             g_loss = DCGAN.gen_loss(fake_output)
             disc_loss = DCGAN.discrim_loss(real_output,fake_output)
 
+
+        '''
+        Optimization flow for DCGAN: 
+            - Collect gradients using tf.GradientTape()
+            - Backprop by applying gradients using tf.keras.Optimzier.apply_gradients()
+        '''
         gen_grads = gen_tape.gradient(g_loss, self.generator.trainable_variables)
         disc_grads = gen_tape.gradient(disc_loss, self.discriminator.trainable_variables)
 
         gen_optimizer.apply_gradients(zip(gen_grads, self.generator.trainable_variables))
         disc_optimizer.apply_gradients(zip(disc_grads, self.discriminator.trainable_variables))
-            
+        
+        return gen_imgs 
             
 
 if __name__ == "__main__":
 
+    matplotlib.use('GTKAgg')
     # Instantiate DCGAN
     thing = DCGAN(100,256,100,10,10,128,128)
 
@@ -206,7 +222,10 @@ if __name__ == "__main__":
 
     # Create 100 256x256x3 images --> z.shape == (100,256,256,3)
     z = thing.generator(b)
+    img = z[1,:,:,:].numpy()
+    img = img * 1e6
+    cv2.imwrite('garbage.png',img)
 
     # Call discriminator on each image --> r.shape == (100x1)
     r = thing.discriminator(z)
-    print(r)
+    
