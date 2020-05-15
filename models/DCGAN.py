@@ -159,7 +159,7 @@ class DCGAN(GAN):
         return loss_fcn(tf.ones_like(fake_output), fake_output)
 
 
-    def train_step(self, real_images, gen_lr, disc_lr):
+    def train_step(self, real_images, gen_lr, disc_lr,logger):
 
         """
         Implements the training routine for the DCGAN framework 
@@ -170,6 +170,7 @@ class DCGAN(GAN):
         @param real_data_batch: 4D tensor containing real images sampled from GrassWeeds repo - [batch_size, img_len, img_wid, num_channels]
         @param gen_lr: <<float>> learning rate for generator, used with Adam Optimizer
         @param disc_lr: <<float>> learning rate for discriminator, used with Adam Optimizer
+        @param logger: <<Comet-ML Experiment()>> Experiment tracker for disc/gen loss
 
         @return gen_imgs: <<tf.Tensor>> containing generated images 
         """
@@ -194,6 +195,8 @@ class DCGAN(GAN):
             # Loss with flipped labels for generator 
             g_loss = DCGAN.gen_loss(fake_output)
             disc_loss = DCGAN.discrim_loss(real_output,fake_output)
+            logger.log_metric('Generator Loss', g_loss)
+            logger.log_metric('Discriminator Loss', disc_loss)
 
 
         '''

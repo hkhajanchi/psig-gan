@@ -3,6 +3,7 @@ PSIG-GAN
 Training loop for GAN runs 
 
 '''
+from comet_ml import Experiment 
 import tensorflow as tf 
 from utils import util 
 from models.DCGAN import DCGAN
@@ -10,7 +11,7 @@ import os
 import datetime
 import time 
 
-def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr):
+def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr,logger):
 
     """
     --- GAN Training Loop -- 
@@ -45,7 +46,7 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr):
             real_data,_ = data_batch.next()
 
             # Train GAN 
-            generated = GAN.train_step(real_data,gen_lr,disc_lr)
+            generated = GAN.train_step(real_data,gen_lr,disc_lr,logger)
 
             # Save images to epoch dir 
             util.save_image_batch(generated, epoch_save_path)
@@ -56,6 +57,9 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr):
 
 
 if __name__ == "__main__":
+    # Define Comet-ML API key here for error logging
+    comet_api_key = 'Zck20BuNFBUi2AbA3YBHK7GNd'
+    logger = Experiment(comet_api_key)
 
     # Define hyperparams for GAN training
     num_epochs = 100
@@ -76,4 +80,4 @@ if __name__ == "__main__":
     data_batch = util.createDataBatch(data_path,batch_size)
 
     # Execute training loop
-    train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr)
+    train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, logger)
