@@ -6,7 +6,7 @@ Training loop for GAN runs
 from comet_ml import Experiment 
 import tensorflow as tf 
 from utils import util 
-from models.DCGAN_Rev1 import DCGAN_Rev1
+from models.DCGAN_Rev1 import DCGAN
 import os 
 import datetime
 import time 
