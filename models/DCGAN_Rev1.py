@@ -70,31 +70,49 @@ class DCGAN(GAN):
 
         # Input --> (256,256,3)
         # Output --> (128,128,discrim_num_channels)
-        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape))
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size-1,self.discrim_filter_size-1),strides=(2,2),padding='same',input_shape=discrim_input_shape))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (128,128, discrim_num_channels)
         # Output --> (64,64, discrim_num_channels*2)
-        discrim.add(layers.Conv2D(self.discrim_num_channels*2,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same'))
+        discrim.add(layers.Conv2D(self.discrim_num_channels*2,(self.discrim_filter_size-7,self.discrim_filter_size-7),strides=(2,2),padding='same'))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (64,64, discrim_num_channels*2)
         # Output --> (32,32, discrim_num_channels*4)
-        discrim.add(layers.Conv2D(self.discrim_num_channels*4,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same'))
+        discrim.add(layers.Conv2D(self.discrim_num_channels*4,(self.discrim_filter_size-7,self.discrim_filter_size-7),strides=(2,2),padding='same'))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (32,32, discrim_num_channels*4)
         # Output --> (16,16, discrim_num_channels*8)
-        discrim.add(layers.Conv2D(self.discrim_num_channels*8,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same'))
+        discrim.add(layers.Conv2D(self.discrim_num_channels*8,(self.discrim_filter_size-7,self.discrim_filter_size-7),strides=(2,2),padding='same'))
+        discrim.add(layers.LeakyReLU())
+        discrim.add(layers.Dropout(0.3))
+
+        # Input --> (16,16, discrim_num_channels*8)
+        # Output --> (4,4, discrim_num_channels*16)
+        discrim.add(layers.Conv2D(self.discrim_num_channels*8,(self.discrim_filter_size-7,self.discrim_filter_size-7),strides=(4,4),padding='same'))
+        discrim.add(layers.LeakyReLU())
+        discrim.add(layers.Dropout(0.3))
+
+        # Input --> (4,4, discrim_num_channels*16)
+        # Output --> (4,4, discrim_num_channels*32)
+        discrim.add(layers.Conv2D(self.discrim_num_channels*8,(self.discrim_filter_size-7,self.discrim_filter_size-7),strides=(1,1),padding='same'))
+        discrim.add(layers.LeakyReLU())
+        discrim.add(layers.Dropout(0.3))
+
+        # Input --> (4,4, discrim_num_channels*16)
+        # Output --> (4,4, discrim_num_channels*32)
+        discrim.add(layers.Conv2D(self.discrim_num_channels*8,(self.discrim_filter_size-9,self.discrim_filter_size-9),strides=(1,1),padding='same'))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Flatten: 3D to 1D
-        # Input --> (16,16, discrim_num_channels*8)
-        # Output --> (16*16*discrim_num_channles*8, 1)
+        # Input --> (4,4, discrim_num_channels*32)
+        # Output --> (4*4*discrim_num_channles*32, 1)
         discrim.add(layers.Flatten())
         discrim.add(layers.Dense(1))
 
@@ -135,7 +153,35 @@ class DCGAN(GAN):
         # Use gen_num_channels/2 for the second round of transposed convolutions
         # Input --> (64,64,3)
         # Output--> (128,128,3)
-        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/2), (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same',use_bias=False))
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/2), (self.gen_filter_size-1,self.gen_filter_size-1), strides=(2,2), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        # Input --> (128,128,3)
+        # Output--> (128,128,3)
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/4), (self.gen_filter_size-7,self.gen_filter_size-7), strides=(1,1), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        # Input --> (128,128,3)
+        # Output--> (128,128,3)
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/8), (self.gen_filter_size-7,self.gen_filter_size-7), strides=(1,1), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        # Input --> (128,128,3)
+        # Output--> (128,128,3)
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/16), (self.gen_filter_size-7,self.gen_filter_size-7), strides=(1,1), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        # Input --> (128,128,3)
+        # Output--> (128,128,3)
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/32), (self.gen_filter_size-7,self.gen_filter_size-7), strides=(1,1), padding='same',use_bias=False))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
