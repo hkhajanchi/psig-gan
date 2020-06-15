@@ -68,7 +68,7 @@ if __name__ == "__main__":
     disc_lr = 1e-4
 
     # Create run directory for current training run 
-    os.chdir(os.path.expanduser('~') + '/psig-gan/runs/')
+    os.chdir(os.path.expanduser('~') + '/Research/psig-gan/runs/')
     run_dir = str(datetime.datetime.now()).replace(' ','')
     os.mkdir(run_dir)
 

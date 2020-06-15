@@ -193,6 +193,7 @@ class DCGAN(GAN):
 
     @staticmethod
     def discrim_loss (real_output, fake_output):
+
         '''
         @param real_output
         @param fake_output
@@ -202,7 +203,7 @@ class DCGAN(GAN):
 
         real_loss = loss_fcn(tf.ones_like(real_output),real_output)
         fake_loss = loss_fcn(tf.zeros_like(fake_output),fake_output)
-        return real_loss + fake_loss
+        return [real_loss, fake_loss]
 
     @staticmethod 
     def gen_loss(fake_output):
@@ -252,9 +253,13 @@ class DCGAN(GAN):
 
             # Loss with flipped labels for generator 
             g_loss = DCGAN.gen_loss(fake_output)
-            disc_loss = DCGAN.discrim_loss(real_output,fake_output)
+            real_loss, fake_loss = DCGAN.discrim_loss(real_output,fake_output)
+            disc_loss = real_loss+fake_loss 
+
             logger.log_metric('Generator Loss', g_loss)
             logger.log_metric('Discriminator Loss', disc_loss)
+            logger.log_metric('Discriminator Loss on Real Images', real_loss)
+            logger.log_metric('Discriminator Loss on Fake Images', fake_loss)
 
 
         '''
