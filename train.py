@@ -6,7 +6,7 @@ Training loop for GAN runs
 from comet_ml import Experiment 
 import tensorflow as tf 
 from utils import util 
-from models.DCGAN import DCGAN
+from models.DCGAN_Rev1 import DCGAN
 import os 
 import datetime
 import time 
@@ -28,7 +28,7 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr,logger):
     @param run_dir : <<str>> path to save all training run data 
     @param gen_lr: <<float>> learning rate for ADAM optimizer (generator)
     @param disc_lr: <<float>> learning rate for discriminator Adam optimizer 
-
+    @param logger:?
     """
 
     for epoch in range(epochs):
@@ -58,7 +58,7 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr,logger):
 
 if __name__ == "__main__":
     # Define Comet-ML API key here for error logging
-    comet_api_key = 'Zck20BuNFBUi2AbA3YBHK7GNd'
+    comet_api_key = 'Gdy4QDrOmu0P01XuBI33rPuIS'
     logger = Experiment(comet_api_key)
 
     # Define hyperparams for GAN training
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     disc_lr = 1e-4
 
     # Create run directory for current training run 
-    os.chdir(os.path.expanduser('~') + '/Research/psig-gan/runs/')
+    os.chdir(os.path.expanduser('~') + '/psig-gan/runs/')
     run_dir = str(datetime.datetime.now()).replace(' ','')
     os.mkdir(run_dir)
 
