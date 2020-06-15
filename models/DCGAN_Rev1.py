@@ -256,10 +256,17 @@ class DCGAN(GAN):
             real_loss, fake_loss = DCGAN.discrim_loss(real_output,fake_output)
             disc_loss = real_loss+fake_loss 
 
+            # Average real/fake discriminator predictions
+            avg_pred_real = tf.math.reduce_mean(real_output).numpy()
+            avg_pred_fake = tf.math.reduce_mean(fake_output).numpy()
+
+
             logger.log_metric('Generator Loss', g_loss)
             logger.log_metric('Discriminator Loss', disc_loss)
-            logger.log_metric('Discriminator Loss on Real Images', real_loss)
+            logger.log_metric('Discriminator Loss on real images', real_loss)
             logger.log_metric('Discriminator Loss on Fake Images', fake_loss)
+            logger.log_metric('Discriminator Prediction on Real', avg_pred_real)
+            logger.log_metric('Discriminator Prediction on Fake', avg_pred_fake)
 
 
         '''

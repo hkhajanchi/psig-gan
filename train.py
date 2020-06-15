@@ -57,9 +57,13 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr,logger):
 
 
 if __name__ == "__main__":
+
+    # Set GPU
+    os.environ["CUDA_VISIBLE_DEVICES"]="0"
+
     # Define Comet-ML API key here for error logging
-    comet_api_key = 'Gdy4QDrOmu0P01XuBI33rPuIS'
-    logger = Experiment(comet_api_key)
+    comet_api_key = 'Zck20BuNFBUi2AbA3YBHK7GNd'
+    logger = Experiment(comet_api_key,project_name="psig_gan",workspace="hkhajanchi")
 
     # Define hyperparams for GAN training
     num_epochs = 100
@@ -67,7 +71,7 @@ if __name__ == "__main__":
     gen_lr  = 1e-4
     disc_lr = 1e-4
 
-    # Create run directory for current training run 
+    # Create run directory for current training run - UPDATE THIS PATH FOR YOUR /runs DIR 
     os.chdir(os.path.expanduser('~') + '/Research/psig-gan/runs/')
     run_dir = str(datetime.datetime.now()).replace(' ','')
     os.mkdir(run_dir)
@@ -80,4 +84,9 @@ if __name__ == "__main__":
     data_batch = util.createDataBatch(data_path,batch_size)
 
     # Execute training loop
-    train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, logger)
+    #train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, logger)
+
+    # plot models 
+    tf.keras.utils.plot_model(gan.generator, to_file="generator.png", show_shapes=True, show_layer_names=True)
+    tf.keras.utils.plot_model(gan.discriminator, to_file="discriminator.png", show_shapes=True, show_layer_names=True)
+
