@@ -274,7 +274,30 @@ class DCGAN(GAN):
         disc_optimizer.apply_gradients(zip(disc_grads, self.discriminator.trainable_variables))
         
         return gen_imgs 
-            
+    
+    @staticmethod  
+    def genLoss(self, gen_lr, real_images,logger): 
+
+        #noise vector for random image generation
+        noise = tf.random.normal([self.num_gen_images,self.latent_shape])
+
+        #Create adam optimizer
+        gen_optim = tf.keras.optimizers.Adam(lr=gen_lr)
+
+        with tf.GradientTape(persistent=True) as gen_tape: 
+
+            #Call generator to create fake images 
+            gen_imgs = self.generator(noise, training=True)
+
+            #discriminator prediction with flipped labels
+            fake_preds = self.discriminator(gen_imgs, training=False)
+            g_loss = DCGAN.gen_loss(fake_preds)
+
+        #backwards 
+        gen_grads = gen_tape.gradient(g_loss, self.generator.trainable_variables)
+        gen_optim.apply_gradients(zip(gen_grads, self.generator.trainable_variables))
+
+
 
 if __name__ == "__main__":
 

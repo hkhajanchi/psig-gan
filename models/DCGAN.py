@@ -34,7 +34,7 @@ class DCGAN(GAN):
             @param gen_num_channels: int specifying the number of output maps of the Conv2DTranpose layers in the generator. 
                                      The second Conv2DTranspose layer gets (gen_num_channels /2 ), so gen_num_channels must be even
             
-            @param discrim_num_channels : int specifying the number of intermediary output channels within the discriminator 
+`               @param discrim_num_channels : int specifying the number of intermediary output channels within the discriminator 
         """
 
         self.latent_shape = latent_shape
