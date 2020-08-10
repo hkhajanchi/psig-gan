@@ -1,13 +1,14 @@
 import tensorflow as tf
 import tensorflow.keras as keras
-from tensorflow.keras import layers
 import numpy as np
-from models.base import GAN
-
 import matplotlib
 import matplotlib.pyplot as plt
+import cv2
+import math  
+from tensorflow import keras
+from tensorflow.keras import layers
+from models.base import GAN
 
-import cv2 
 
 """
 TF 2.0 Implementation of DCGAN to use for baseline testing of PSIG-GAN
@@ -18,7 +19,7 @@ Implements the abstract GAN class specified in base.py
 class DCGAN(GAN):
 
 
-    def __init__(self,latent_shape, output_image_shape, num_gen_images, gen_filter_size, discrim_filter_size, gen_num_channels, discrim_num_channels):
+    def __init__(self, latent_shape, output_image_shape, num_gen_images, gen_filter_size, discrim_filter_size, gen_num_channels, discrim_num_channels):
 
         """
         Creates a DCGAN with Keras-based models for both Discriminator and Generator 
@@ -26,7 +27,7 @@ class DCGAN(GAN):
 
         Constructor args:
             @param latent_shape: tuple of ints identifying the shape of the seed fed to the generator [num_imgs, seed_dim]
-            @param output_image_shape: tuple of ints specifying the generator's output shape. Should be 512x512x3 for RGB based images
+            @param output_image_shape: tuple of ints specifying the generator's output shape. Should be 256x256x3 for RGB based images
             @param num_gen_images: int specifying the batch size of images to be generated
 
             @param gen_filter_size: int specifying the dimensions of the generator filters (square filter - [gen_filter_size x gen_filter_size])
@@ -34,9 +35,10 @@ class DCGAN(GAN):
             @param gen_num_channels: int specifying the number of output maps of the Conv2DTranpose layers in the generator. 
                                      The second Conv2DTranspose layer gets (gen_num_channels /2 ), so gen_num_channels must be even
             
-`               @param discrim_num_channels : int specifying the number of intermediary output channels within the discriminator 
+            @param discrim_num_channels : int specifying the number of intermediary output channels within the discriminator 
+        
         """
-
+        
         self.latent_shape = latent_shape
         self.output_shape = output_image_shape
         self.gen_filter_size = gen_filter_size
@@ -70,19 +72,25 @@ class DCGAN(GAN):
 
         # Input --> (256,256,3)
         # Output --> (128,128,discrim_num_channels)
-        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape))
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)) )
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (128,128, discrim_num_channels)
         # Output --> (64,64, discrim_num_channels*2)
-        discrim.add(layers.Conv2D(self.discrim_num_channels*2,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same'))
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
+        discrim.add(layers.LeakyReLU())
+        discrim.add(layers.Dropout(0.3))
+
+        # Input --> (64,64, discrim_num_channels*2)
+        # Output --> (32,32, discrim_num_channels*4)
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Flatten: 3D to 1D
-        # Input --> (128,128, discrim_num_channels*2)
-        # Output --> (128*128*discrim_num_channles*2, 1)
+        # Input --> (32,32, discrim_num_channels*32)
+        # Output --> (32*32*discrim_num_channles*32, 1)
         discrim.add(layers.Flatten())
         discrim.add(layers.Dense(1))
 
@@ -103,13 +111,13 @@ class DCGAN(GAN):
 
         model = keras.Sequential()
 
-        # Add initial dense layer with output shape (image_shape/2*image_shape/2*3) for an flattened RGB image
+        # Add initial dense layer with output shape (image_shape/4*image_shape/4*3) for an flattened RGB image
         # We want to recover the original input image shape at the end of the generator - so use output_shape/4 at first
         # Use BatchNorm and LeakyReLU as activations
 
         # (100x1) --> (64*64*3,1) --> (64,64,3) //Upsamples 1D vector into 3D array
         model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 3) , use_bias=False, input_shape=(self.latent_shape,) ))
-        model.add(layers.BatchNormalization())
+        model.add(layers.BatchNormalization()) 
         model.add(layers.LeakyReLU())
         model.add(layers.Reshape((int(self.output_shape/4),int(self.output_shape/4),3)))
 
@@ -123,7 +131,14 @@ class DCGAN(GAN):
         # Use gen_num_channels/2 for the second round of transposed convolutions
         # Input --> (64,64,3)
         # Output--> (128,128,3)
-        model.add(layers.Conv2DTranspose(int(self.gen_num_channels/2), (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same',use_bias=False))
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels), (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same',use_bias=False))
+        model.add(layers.BatchNormalization())
+        model.add(layers.LeakyReLU())
+
+        # Use gen_num_channels/2 for the second round of transposed convolutions
+        # Input --> (128,128,3)
+        # Output--> (128,128,3)
+        model.add(layers.Conv2DTranspose(int(self.gen_num_channels), (self.gen_filter_size,self.gen_filter_size), strides=(1,1), padding='same',use_bias=False))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
@@ -133,20 +148,21 @@ class DCGAN(GAN):
         model.add(layers.Conv2DTranspose(3, (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False, activation='tanh'))
         return model 
 
-    @staticmethod
+    
     def discrim_loss (real_output, fake_output):
+
         '''
         @param real_output
         @param fake_output
         Fix docstring later
         '''
         loss_fcn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
-
+        #Real images assigned value of 1
         real_loss = loss_fcn(tf.ones_like(real_output),real_output)
+        #Fake images assigned 0
         fake_loss = loss_fcn(tf.zeros_like(fake_output),fake_output)
-        return real_loss + fake_loss
+        return [real_loss, fake_loss]
 
-    @staticmethod 
     def gen_loss(fake_output):
 
         '''
@@ -157,11 +173,60 @@ class DCGAN(GAN):
 
         loss_fcn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
         return loss_fcn(tf.ones_like(fake_output), fake_output)
+    
+    def discTrain(self, disc_lr, real_images, epoch, logger): 
 
+        #noise vector for random image generation
+        noise = tf.random.normal([self.num_gen_images,self.latent_shape])
+        gen_imgs=self.generator(noise, training=False)
 
-    def train_step(self, real_images, gen_lr, disc_lr,logger):
+        #Create adam optimizer
+        disc_optim = tf.keras.optimizers.Adam(lr=disc_lr)
 
-        """
+        with tf.GradientTape(persistent=True) as disc_tape: 
+
+            # run discriminator on real and fake images
+            real_output = self.discriminator(real_images,training=True)
+            fake_output = self.discriminator(gen_imgs,training=True)
+            
+            real_loss, fake_loss = DCGAN.discrim_loss(real_output,fake_output)
+            d_loss = real_loss + fake_loss
+
+            #backwards 
+            disc_grads = disc_tape.gradient(d_loss, self.discriminator.trainable_variables)
+            disc_optim.apply_gradients(zip(disc_grads, self.discriminator.trainable_variables))
+
+            logger.log_metric('Discriminator Loss', d_loss, step=epoch)
+            logger.log_metric('Discriminator Loss on Real Images', real_loss, step=epoch)
+            logger.log_metric('Discriminator Loss on Fake Images', fake_loss, step=epoch)
+    
+    def genTrain(self, gen_lr, epoch, logger): 
+
+        #noise vector for random image generation
+        noise = tf.random.normal([self.num_gen_images,self.latent_shape])
+
+        #Create adam optimizer
+        gen_optim = tf.keras.optimizers.Adam(lr=gen_lr)
+
+        with tf.GradientTape(persistent=True) as gen_tape: 
+
+            #Call generator to create fake images 
+            gen_imgs = self.generator(noise, training=True)
+
+            #discriminator prediction with flipped labels
+            fake_preds = self.discriminator(gen_imgs, training=False)
+            g_loss = DCGAN.gen_loss(fake_preds)
+
+            gen_grads = gen_tape.gradient(g_loss, self.generator.trainable_variables)
+            gen_optim.apply_gradients(zip(gen_grads, self.generator.trainable_variables))
+            
+            logger.log_metric('Generator Loss', g_loss, step=epoch)
+
+        return gen_imgs
+
+    def train_step(self, real_images, gen_lr, disc_lr, gen_train_freq, disc_train_freq, epoch, logger):
+
+        """ 
         Implements the training routine for the DCGAN framework 
         Implemented using Tensorflow 2.0
 
@@ -171,53 +236,25 @@ class DCGAN(GAN):
         @param gen_lr: <<float>> learning rate for generator, used with Adam Optimizer
         @param disc_lr: <<float>> learning rate for discriminator, used with Adam Optimizer
         @param logger: <<Comet-ML Experiment()>> Experiment tracker for disc/gen loss
+        @param gen_train_freq: generator training frequency per epoch
+        @param disc_train_freq: discriminator training frequency per epoch
 
         @return gen_imgs: <<tf.Tensor>> containing generated images 
         """
-
-        # Adam based optimizers for both discrim/gen
-        gen_optimizer = tf.keras.optimizers.Adam(gen_lr)
-        disc_optimizer = tf.keras.optimizers.Adam(disc_lr)
-
-        noise = tf.random.normal([self.num_gen_images,self.latent_shape])
         
-        with tf.GradientTape(persistent=True) as gen_tape, tf.GradientTape(persistent=True) as disc_tape: 
+        for freq in np.arange(0,gen_train_freq,1):
+            gen_imgs = self.genTrain(gen_lr, epoch, logger)
+
+        for freq in np.arange(0,disc_train_freq,1):
+            self.discTrain(disc_lr, real_images, epoch, logger)
+
+        return gen_imgs
             
-            # Create fake images using the differentiable Generator
-            # Input: (batch_size, noise_shape)
-            # Output: (batch_size, 256,256,3)
-            gen_imgs = self.generator(noise,training=True)
-
-            # run discriminator on real and fake images
-            real_output = self.discriminator(real_images,training=True)
-            fake_output = self.discriminator(gen_imgs,training=True)
-
-            # Loss with flipped labels for generator 
-            g_loss = DCGAN.gen_loss(fake_output)
-            disc_loss = DCGAN.discrim_loss(real_output,fake_output)
-            logger.log_metric('Generator Loss', g_loss)
-            logger.log_metric('Discriminator Loss', disc_loss)
-
-
-        '''
-        Optimization flow for DCGAN: 
-            - Collect gradients using tf.GradientTape()
-            - Backprop by applying gradients using tf.keras.Optimzier.apply_gradients()
-        '''
-        gen_grads = gen_tape.gradient(g_loss, self.generator.trainable_variables)
-        disc_grads = gen_tape.gradient(disc_loss, self.discriminator.trainable_variables)
-
-        gen_optimizer.apply_gradients(zip(gen_grads, self.generator.trainable_variables))
-        disc_optimizer.apply_gradients(zip(disc_grads, self.discriminator.trainable_variables))
-        
-        return gen_imgs 
-            
-
 if __name__ == "__main__":
 
     matplotlib.use('GTKAgg')
     # Instantiate DCGAN
-    thing = DCGAN(100,256,100,10,10,128,128)
+    thing = DCGAN(100,256,100,5,5,128,128)
 
     # Create 100x1 vector using numpy
     b = np.random.rand(100,1)
@@ -231,4 +268,3 @@ if __name__ == "__main__":
 
     # Call discriminator on each image --> r.shape == (100x1)
     r = thing.discriminator(z)
-    
