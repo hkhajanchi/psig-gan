@@ -85,7 +85,25 @@ def save_image_batch(image_tensor, write_dir):
         write_path = write_dir + "/generated_{}.png".format(i)
         save_img(write_path, image_tensor[i,:,:,:])
 
- 
+
+def normalize(image_tensor):
+     '''
+     Converts an RGB image into normalized greyscale 
+     '''
+     images = []
+
+     for i in range(image_tensor.shape[0]):
+        image = image_tensor[i,:,:,:]
+
+        image = tf.cast(image, tf.float32)
+        image = (image / 127.5) - 1
+        image = tf.expand_dims(image[:,:,0], axis=2)
+        images.append(image)
+
+     images = tf.convert_to_tensor(images)
+    
+     return images 
+
 if __name__ == "__main__":
 
     '''
@@ -96,6 +114,8 @@ if __name__ == "__main__":
     batch_size = 64
     iter = createDataBatch(path, batch_size)
 
-    for i in range(len(iter)):
-        batch,_ = iter.next()
-        print(i) 
+    images,_ = iter.next()
+    print(images.shape)
+
+    normalized = normalize(images)
+    print(normalized.shape)

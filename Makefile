@@ -5,7 +5,10 @@ train2:
 	python3.5 train2.py
 
 train3: 
-	python3.5 train3.py   
+	python3.5 train3.py
+
+train_d:
+	python3.5 train_discrim.py
 
 clean: 
 	rm -rf  ~/psig-gan/runs/*

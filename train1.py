@@ -7,9 +7,11 @@ from comet_ml import Experiment
 import tensorflow as tf 
 from utils import util 
 from models.DCGAN_Rev3 import DCGAN
+import tensorflow.keras as keras
 import os 
 import datetime
-import time 
+import time
+import math 
 
 def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger):
 
@@ -42,13 +44,22 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr, gen_train_freq, di
         start = time.time()
         batch_ctr = 0
 
+         # lr decay function
+        initial_lr = 0.01
+        def lr_decay(initial_lr, epoch):
+            return initial_lr * math.pow(0.666, epoch)
+        lr = lr_decay(initial_lr, epoch)
+        # lr schedule
+        gen_lr = lr
+        disc_lr = lr
+
         for i in range(len(data_batch)):
             
             # Extract image tensor and disregard labels
             real_data,_ = data_batch.next()
 
             # Train GAN 
-            generated = GAN.train_step(real_data,gen_lr,disc_lr,gen_train_freq, disc_train_freq, logger)
+            generated = GAN.train_step(real_data,gen_lr,disc_lr,gen_train_freq, disc_train_freq, epoch, logger)
 
             # Save images to epoch dir 
             util.save_image_batch(generated, epoch_save_path)
@@ -76,26 +87,18 @@ def trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_trai
         #Define experiment name
         logger.set_name("disc_lr"+ str(disc_lr) + " " + "gen_lr"+ str(gen_lr) + " " + "gen_train_freq"+ str(gen_train_freq) + " " + "disc_train_freq" + str(disc_train_freq) + " "  + "num_epochs"+ str(num_epochs))
         
-        
-        # lr decay function
-        def lr_decay(epoch, logger):
-            logger.log_metric('lr_decay', lr_decay, step=epoch)
-        return 0.01 * math.pow(0.6, epoch)
-        # lr schedule callback
-        lr_decay_callback = tf.keras.callbacks.LearningRateScheduler(lr_decay, verbose=True) 
-
         # Execute training loop
-        train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger, callbacks=[lr_decay_callback])
+        train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger)
     
 if __name__ == "__main__":
     # Set GPU here
     os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # Define hyperparams for GAN training
-    num_epochs = 30
-    batch_size = 64
-    gen_lr  = 1e-3
-    disc_lr = 1e-3
+    num_epochs = 200
+    batch_size = 32
+    gen_lr  = 1e-2
+    disc_lr = 1e-2
     gen_train_freq = 1
     disc_train_freq = 1
     # Define Comet-ML API key here for error logging
@@ -105,15 +108,18 @@ if __name__ == "__main__":
     # Execute training loop
     trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq,logger)
     
-    """ disc_train_freq = 3
+    gen_lr  = 1e-1
+    disc_lr = 1e-5
     # Execute training loop
     trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq,logger)
 
-    disc_train_freq = 2
+    """ gen_lr  = 1e-4
+    disc_lr = 1e-4
     # Execute training loop
     trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger)
-
-    disc_train_freq = 1
+    
+    gen_lr  = 1e-4
+    disc_lr = 1e-3
     # Execute training loop
     trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger) """
 

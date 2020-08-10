@@ -27,7 +27,7 @@ class DCGAN(GAN):
 
         Constructor args:
             @param latent_shape: tuple of ints identifying the shape of the seed fed to the generator [num_imgs, seed_dim]
-            @param output_image_shape: tuple of ints specifying the generator's output shape. Should be 256x256x3 for RGB based images
+            @param output_image_shape: tuple of ints specifying the generator's output shape. Should be 256x256x1 for BW based images
             @param num_gen_images: int specifying the batch size of images to be generated
 
             @param gen_filter_size: int specifying the dimensions of the generator filters (square filter - [gen_filter_size x gen_filter_size])
@@ -67,30 +67,30 @@ class DCGAN(GAN):
         hence: discrim_input_shape = self.output_image_shape
 
         '''
-        discrim_input_shape = (256,256,3)
+        discrim_input_shape = (256,256,1)
         discrim = keras.Sequential()
 
-        # Input --> (256,256,3)
+        # Input --> (256,256,1)
         # Output --> (128,128,discrim_num_channels)
         discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)) )
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (128,128, discrim_num_channels)
-        # Output --> (64,64, discrim_num_channels*2)
+        # Output --> (64,64, discrim_num_channels)
         discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
-        # Input --> (64,64, discrim_num_channels*2)
-        # Output --> (32,32, discrim_num_channels*4)
+        # Input --> (64,64, discrim_num_channels)
+        # Output --> (32,32, discrim_num_channels)
         discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Flatten: 3D to 1D
-        # Input --> (32,32, discrim_num_channels*32)
-        # Output --> (32*32*discrim_num_channles*32, 1)
+        # Input --> (32,32, discrim_num_channels)
+        # Output --> (32*32*discrim_num_channles, 1)
         discrim.add(layers.Flatten())
         discrim.add(layers.Dense(1))
 
@@ -106,46 +106,46 @@ class DCGAN(GAN):
         Input noise vector size: 
             self.latent_shape, 1
         
-        Output image shape: (256x256x3)
+        Output image shape: (256x256x1)
         '''
 
         model = keras.Sequential()
 
-        # Add initial dense layer with output shape (image_shape/4*image_shape/4*3) for an flattened RGB image
+        # Add initial dense layer with output shape (image_shape/4*image_shape/4*1) for a flattened BW image
         # We want to recover the original input image shape at the end of the generator - so use output_shape/4 at first
         # Use BatchNorm and LeakyReLU as activations
 
-        # (100x1) --> (64*64*3,1) --> (64,64,3) //Upsamples 1D vector into 3D array
-        model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 3) , use_bias=False, input_shape=(self.latent_shape,) ))
+        # (100x1) --> (64*64*1,1) --> (64,64,1) //Upsamples 1D vector into 3D array
+        model.add(layers.Dense( int(self.output_shape/4 * self.output_shape/4 * 1) , use_bias=False, input_shape=(self.latent_shape,) ))
         model.add(layers.BatchNormalization()) 
         model.add(layers.LeakyReLU())
-        model.add(layers.Reshape((int(self.output_shape/4),int(self.output_shape/4),3)))
+        model.add(layers.Reshape((int(self.output_shape/4),int(self.output_shape/4),1)))
 
         # Upsample using Conv2D Transpose (DCGAN Architecture) - boost to the number of channels specified in constructor
-        # Input --> (64,64,3) 
-        # Output --> (64,64,3)
+        # Input --> (64,64,1) 
+        # Output --> (64,64,1)
         model.add(layers.Conv2DTranspose(self.gen_num_channels, (self.gen_filter_size,self.gen_filter_size),strides=(1,1), padding='same', use_bias=False))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
         # Use gen_num_channels/2 for the second round of transposed convolutions
-        # Input --> (64,64,3)
-        # Output--> (128,128,3)
+        # Input --> (64,64,1)
+        # Output--> (128,128,1)
         model.add(layers.Conv2DTranspose(int(self.gen_num_channels), (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same',use_bias=False))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
         # Use gen_num_channels/2 for the second round of transposed convolutions
-        # Input --> (128,128,3)
-        # Output--> (128,128,3)
+        # Input --> (128,128,1)
+        # Output--> (128,128,1)
         model.add(layers.Conv2DTranspose(int(self.gen_num_channels), (self.gen_filter_size,self.gen_filter_size), strides=(1,1), padding='same',use_bias=False))
         model.add(layers.BatchNormalization())
         model.add(layers.LeakyReLU())
 
-        # 3 channels for RGB image output 
-        # Input  --> (128,128,3)
-        # Output --> (256,256,3)
-        model.add(layers.Conv2DTranspose(3, (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False, activation='tanh'))
+        # 1 channel for BW image output 
+        # Input  --> (128,128,1)
+        # Output --> (256,256,1)
+        model.add(layers.Conv2DTranspose(1, (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False, activation='tanh'))
         return model 
 
     
@@ -174,7 +174,7 @@ class DCGAN(GAN):
         loss_fcn = tf.keras.losses.BinaryCrossentropy(from_logits=True)
         return loss_fcn(tf.ones_like(fake_output), fake_output)
     
-    def discTrain(self, disc_lr, real_images, epoch, logger): 
+    def discTrain(self, disc_lr, real_images, i, logger): 
 
         #noise vector for random image generation
         noise = tf.random.normal([self.num_gen_images,self.latent_shape])
@@ -196,11 +196,11 @@ class DCGAN(GAN):
             disc_grads = disc_tape.gradient(d_loss, self.discriminator.trainable_variables)
             disc_optim.apply_gradients(zip(disc_grads, self.discriminator.trainable_variables))
 
-            logger.log_metric('Discriminator Loss', d_loss, step=epoch)
-            logger.log_metric('Discriminator Loss on Real Images', real_loss, step=epoch)
-            logger.log_metric('Discriminator Loss on Fake Images', fake_loss, step=epoch)
+            logger.log_metric('Discriminator Loss', d_loss, step=i)
+            logger.log_metric('Discriminator Loss on Real Images', real_loss, step=i)
+            logger.log_metric('Discriminator Loss on Fake Images', fake_loss, step=i)
     
-    def genTrain(self, gen_lr, epoch, logger): 
+    def genTrain(self, gen_lr, i, logger): 
 
         #noise vector for random image generation
         noise = tf.random.normal([self.num_gen_images,self.latent_shape])
@@ -220,11 +220,11 @@ class DCGAN(GAN):
             gen_grads = gen_tape.gradient(g_loss, self.generator.trainable_variables)
             gen_optim.apply_gradients(zip(gen_grads, self.generator.trainable_variables))
             
-            logger.log_metric('Generator Loss', g_loss, step=epoch)
+            logger.log_metric('Generator Loss', g_loss, step=i)
 
         return gen_imgs
 
-    def train_step(self, real_images, gen_lr, disc_lr, gen_train_freq, disc_train_freq, epoch, logger):
+    def train_step(self, real_images, gen_lr, disc_lr, gen_train_freq, disc_train_freq, i, logger):
 
         """ 
         Implements the training routine for the DCGAN framework 
@@ -243,10 +243,10 @@ class DCGAN(GAN):
         """
         
         for freq in np.arange(0,gen_train_freq,1):
-            gen_imgs = self.genTrain(gen_lr, epoch, logger)
+            gen_imgs = self.genTrain(gen_lr, i, logger)
 
         for freq in np.arange(0,disc_train_freq,1):
-            self.discTrain(disc_lr, real_images, epoch, logger)
+            self.discTrain(disc_lr, real_images, i, logger)
 
         return gen_imgs
             
@@ -260,7 +260,7 @@ if __name__ == "__main__":
     b = np.random.rand(100,1)
     b = tf.cast(b, tf.float32)
 
-    # Create 100 256x256x3 images --> z.shape == (100,256,256,3)
+    # Create 100 256x256x1 images --> z.shape == (100,256,256,1)
     z = thing.generator(b)
     img = z[1,:,:,:].numpy()
     img = img * 1e6

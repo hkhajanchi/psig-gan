@@ -6,7 +6,7 @@ Training loop for GAN runs
 from comet_ml import Experiment 
 import tensorflow as tf 
 from utils import util 
-from models.DCGAN_Rev2 import DCGAN
+from models.DCGAN_BW import DCGAN
 import os 
 import datetime
 import time 
@@ -33,29 +33,25 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr, gen_train_freq, di
     @param disc_train_freq: discriminator training frequency per epoch
     """
 
-    for epoch in range(epochs):
-        
+    for i in range(len(data_batch)):        
         # Create directory to save run images 
-        epoch_save_path = run_dir + '/epoch_{}'.format(epoch)
-        os.mkdir(epoch_save_path)
-
+        batch_save_path = run_dir + '/batch_{}'.format(i)
+        os.mkdir(batch_save_path)
+        # Extract image tensor and disregard labels
+        real_data,_ = data_batch.next()
+        #---- normalize images --- 
+        real_data = util.normalize(real_data)
         start = time.time()
-        batch_ctr = 0
 
-        for i in range(len(data_batch)):
+        for epoch in range(epochs):
             
-            # Extract image tensor and disregard labels
-            real_data,_ = data_batch.next()
-
             # Train GAN 
-            generated = GAN.train_step(real_data,gen_lr,disc_lr,gen_train_freq, disc_train_freq, logger)
-
+            generated = GAN.train_step(real_data,gen_lr,disc_lr,gen_train_freq, disc_train_freq, epoch, logger)
             # Save images to epoch dir 
-            util.save_image_batch(generated, epoch_save_path)
+            util.save_image_batch(generated, batch_save_path)
+            print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
 
-            print("Batch {} completed".format(i))
-
-        print ('Time for epoch {} is {} sec'.format(epoch + 1, time.time()-start))
+        print("Batch {} completed".format(i))
 
 def trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger):
         # Create run directory for current training run 
@@ -68,30 +64,33 @@ def trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_trai
         # Load real grassweeds image data 
         data_path = '/home/data/dcgan-data/'
         data_batch = util.createDataBatch(data_path,batch_size)
-        # Define Comet-ML API key here for error logging
-        comet_api_key = 'Gdy4QDrOmu0P01XuBI33rPuIS'
-        #Define Comet Project Name
-        logger = Experiment(comet_api_key, project_name="psig-gan")
-        
-        #Define experiment name
-        logger.set_name("disc_lr"+ str(disc_lr) + " " + "gen_lr"+ str(gen_lr) + " " + "gen_train_freq"+ str(gen_train_freq) + " " + "disc_train_freq" + str(disc_train_freq) + " "  + "num_epochs"+ str(num_epochs) + " " + "dropout=0.5")
         
         # Execute training loop
         train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger)
     
 if __name__ == "__main__":
     # Set GPU here
-    os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     # Define hyperparams for GAN training
-    num_epochs = 30
-    batch_size = 32
+    num_epochs = 100
+    batch_size = 64
     gen_lr  = 1e-3
     disc_lr = 1e-6
     gen_train_freq = 2
     disc_train_freq = 4
+
+    # Define Comet-ML API key here for error logging
+    comet_api_key = 'Gdy4QDrOmu0P01XuBI33rPuIS'
+    #Define Comet Project Name
+    logger = Experiment(comet_api_key, project_name="psig-gan")
+        
+    #Define experiment name
+    logger.set_name("disc_lr"+ str(disc_lr) + " " + "gen_lr"+ str(gen_lr) + " " + "gen_train_freq"+ str(gen_train_freq) + " " + "disc_train_freq" + str(disc_train_freq) + " "  + "num_epochs"+ str(num_epochs) + " " + "dropout=0.5")
+        
+
     # Execute training loop
-    trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq,logger)
+    trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger)
     
     #Terminal Summary
     # gan.generator.summary(line_length=None, positions=None, print_fn=None)

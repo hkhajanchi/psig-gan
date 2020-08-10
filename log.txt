@@ -1,0 +1,430 @@
+python3.5 train_discrim.py
+Found 2730 images belonging to 1 classes.
+Time for epoch 1 is 2.499434232711792 sec
+Time for epoch 2 is 0.2259359359741211 sec
+Time for epoch 3 is 0.22609376907348633 sec
+Time for epoch 4 is 0.2345435619354248 sec
+Time for epoch 5 is 0.2281336784362793 sec
+Time for epoch 6 is 0.22652530670166016 sec
+Time for epoch 7 is 0.22710299491882324 sec
+Time for epoch 8 is 0.22218823432922363 sec
+Time for epoch 9 is 0.22658228874206543 sec
+Time for epoch 10 is 0.22843122482299805 sec
+Batch 0 completed
+Time for epoch 1 is 0.22871971130371094 sec
+Time for epoch 2 is 0.22589612007141113 sec
+Time for epoch 3 is 0.23103594779968262 sec
+Time for epoch 4 is 0.22724151611328125 sec
+Time for epoch 5 is 0.22760319709777832 sec
+Time for epoch 6 is 0.22854328155517578 sec
+Time for epoch 7 is 0.22707915306091309 sec
+Time for epoch 8 is 0.2282276153564453 sec
+Time for epoch 9 is 0.2319188117980957 sec
+Time for epoch 10 is 0.2260293960571289 sec
+Batch 1 completed
+Time for epoch 1 is 0.2277994155883789 sec
+Time for epoch 2 is 0.2318577766418457 sec
+Time for epoch 3 is 0.23302030563354492 sec
+Time for epoch 4 is 0.23163723945617676 sec
+Time for epoch 5 is 0.23156523704528809 sec
+Time for epoch 6 is 0.22901487350463867 sec
+Time for epoch 7 is 0.23029708862304688 sec
+Time for epoch 8 is 0.2292613983154297 sec
+Time for epoch 9 is 0.22732949256896973 sec
+Time for epoch 10 is 0.23416638374328613 sec
+Batch 2 completed
+Time for epoch 1 is 0.22771477699279785 sec
+Time for epoch 2 is 0.22849750518798828 sec
+Time for epoch 3 is 0.2331376075744629 sec
+Time for epoch 4 is 0.23000049591064453 sec
+Time for epoch 5 is 0.230057954788208 sec
+Time for epoch 6 is 0.22626161575317383 sec
+Time for epoch 7 is 0.22581076622009277 sec
+Time for epoch 8 is 0.23126554489135742 sec
+Time for epoch 9 is 0.2293076515197754 sec
+Time for epoch 10 is 0.2317955493927002 sec
+Batch 3 completed
+Time for epoch 1 is 0.22895550727844238 sec
+Time for epoch 2 is 0.2242121696472168 sec
+Time for epoch 3 is 0.22954988479614258 sec
+Time for epoch 4 is 0.22958970069885254 sec
+Time for epoch 5 is 0.22839999198913574 sec
+Time for epoch 6 is 0.2330796718597412 sec
+Time for epoch 7 is 0.2295856475830078 sec
+Time for epoch 8 is 0.23479270935058594 sec
+Time for epoch 9 is 0.22946667671203613 sec
+Time for epoch 10 is 0.22764372825622559 sec
+Batch 4 completed
+Time for epoch 1 is 0.22548866271972656 sec
+Time for epoch 2 is 0.22582221031188965 sec
+Time for epoch 3 is 0.22716832160949707 sec
+Time for epoch 4 is 0.2294933795928955 sec
+Time for epoch 5 is 0.231126070022583 sec
+Time for epoch 6 is 0.23901581764221191 sec
+Time for epoch 7 is 0.2277390956878662 sec
+Time for epoch 8 is 0.2279806137084961 sec
+Time for epoch 9 is 0.23277950286865234 sec
+Time for epoch 10 is 0.2289893627166748 sec
+Batch 5 completed
+Time for epoch 1 is 0.2220020294189453 sec
+Time for epoch 2 is 0.2309563159942627 sec
+Time for epoch 3 is 0.2290332317352295 sec
+Time for epoch 4 is 0.22823715209960938 sec
+Time for epoch 5 is 0.22838330268859863 sec
+Time for epoch 6 is 0.2361621856689453 sec
+Time for epoch 7 is 0.22877836227416992 sec
+Time for epoch 8 is 0.22754383087158203 sec
+Time for epoch 9 is 0.2317194938659668 sec
+Time for epoch 10 is 0.2246870994567871 sec
+Batch 6 completed
+Time for epoch 1 is 0.22693538665771484 sec
+Time for epoch 2 is 0.23331308364868164 sec
+Time for epoch 3 is 0.2294909954071045 sec
+Time for epoch 4 is 0.23567676544189453 sec
+Time for epoch 5 is 0.22915959358215332 sec
+Time for epoch 6 is 0.229813814163208 sec
+Time for epoch 7 is 0.2290818691253662 sec
+Time for epoch 8 is 0.22687768936157227 sec
+Time for epoch 9 is 0.23275399208068848 sec
+Time for epoch 10 is 0.23310160636901855 sec
+Batch 7 completed
+Time for epoch 1 is 0.22627520561218262 sec
+Time for epoch 2 is 0.22577977180480957 sec
+Time for epoch 3 is 0.22713947296142578 sec
+Time for epoch 4 is 0.22771191596984863 sec
+Time for epoch 5 is 0.22625231742858887 sec
+Time for epoch 6 is 0.22771263122558594 sec
+Time for epoch 7 is 0.22706389427185059 sec
+Time for epoch 8 is 0.22922706604003906 sec
+Time for epoch 9 is 0.22997474670410156 sec
+Time for epoch 10 is 0.2328646183013916 sec
+Batch 8 completed
+Time for epoch 1 is 0.23015213012695312 sec
+Time for epoch 2 is 0.2270793914794922 sec
+Time for epoch 3 is 0.23188257217407227 sec
+Time for epoch 4 is 0.22810673713684082 sec
+Time for epoch 5 is 0.22362136840820312 sec
+Time for epoch 6 is 0.23651885986328125 sec
+Time for epoch 7 is 0.22779130935668945 sec
+Time for epoch 8 is 0.22546982765197754 sec
+Time for epoch 9 is 0.2270641326904297 sec
+Time for epoch 10 is 0.2308516502380371 sec
+Batch 9 completed
+Time for epoch 1 is 0.22832584381103516 sec
+Time for epoch 2 is 0.22792792320251465 sec
+Time for epoch 3 is 0.22596144676208496 sec
+Time for epoch 4 is 0.2298882007598877 sec
+Time for epoch 5 is 0.2314014434814453 sec
+Time for epoch 6 is 0.2274484634399414 sec
+Time for epoch 7 is 0.23296666145324707 sec
+Time for epoch 8 is 0.22841382026672363 sec
+Time for epoch 9 is 0.22685909271240234 sec
+Time for epoch 10 is 0.22832345962524414 sec
+Batch 10 completed
+Time for epoch 1 is 0.22865867614746094 sec
+Time for epoch 2 is 0.23127150535583496 sec
+Time for epoch 3 is 0.22974181175231934 sec
+Time for epoch 4 is 0.23124074935913086 sec
+Time for epoch 5 is 0.22886943817138672 sec
+Time for epoch 6 is 0.2312030792236328 sec
+Time for epoch 7 is 0.2312932014465332 sec
+Time for epoch 8 is 0.22564148902893066 sec
+Time for epoch 9 is 0.23130488395690918 sec
+Time for epoch 10 is 0.22939324378967285 sec
+Batch 11 completed
+Time for epoch 1 is 0.22545886039733887 sec
+Time for epoch 2 is 0.22463464736938477 sec
+Time for epoch 3 is 0.23198509216308594 sec
+Time for epoch 4 is 0.22793960571289062 sec
+Time for epoch 5 is 0.22728776931762695 sec
+Time for epoch 6 is 0.22507190704345703 sec
+Time for epoch 7 is 0.2297379970550537 sec
+Time for epoch 8 is 0.2285783290863037 sec
+Time for epoch 9 is 0.22460412979125977 sec
+Time for epoch 10 is 0.23442697525024414 sec
+Batch 12 completed
+Time for epoch 1 is 0.22837066650390625 sec
+Time for epoch 2 is 0.22784686088562012 sec
+Time for epoch 3 is 0.23159217834472656 sec
+Time for epoch 4 is 0.2373216152191162 sec
+Time for epoch 5 is 0.23017263412475586 sec
+Time for epoch 6 is 0.23111748695373535 sec
+Time for epoch 7 is 0.22864365577697754 sec
+Time for epoch 8 is 0.22725176811218262 sec
+Time for epoch 9 is 0.23565173149108887 sec
+Time for epoch 10 is 0.23276424407958984 sec
+Batch 13 completed
+Time for epoch 1 is 0.22689008712768555 sec
+Time for epoch 2 is 0.22681903839111328 sec
+Time for epoch 3 is 0.23621535301208496 sec
+Time for epoch 4 is 0.2267138957977295 sec
+Time for epoch 5 is 0.2332150936126709 sec
+Time for epoch 6 is 0.2266850471496582 sec
+Time for epoch 7 is 0.22937846183776855 sec
+Time for epoch 8 is 0.22655081748962402 sec
+Time for epoch 9 is 0.2380814552307129 sec
+Time for epoch 10 is 0.23105263710021973 sec
+Batch 14 completed
+Time for epoch 1 is 0.22480392456054688 sec
+Time for epoch 2 is 0.22522473335266113 sec
+Time for epoch 3 is 0.23288846015930176 sec
+Time for epoch 4 is 0.22643804550170898 sec
+Time for epoch 5 is 0.2269430160522461 sec
+Time for epoch 6 is 0.22710371017456055 sec
+Time for epoch 7 is 0.2257981300354004 sec
+Time for epoch 8 is 0.22433185577392578 sec
+Time for epoch 9 is 0.22447514533996582 sec
+Time for epoch 10 is 0.22853493690490723 sec
+Batch 15 completed
+Time for epoch 1 is 0.2270042896270752 sec
+Time for epoch 2 is 0.22606492042541504 sec
+Time for epoch 3 is 0.22925949096679688 sec
+Time for epoch 4 is 0.23393630981445312 sec
+Time for epoch 5 is 0.2305917739868164 sec
+Time for epoch 6 is 0.2252824306488037 sec
+Time for epoch 7 is 0.22824358940124512 sec
+Time for epoch 8 is 0.22781133651733398 sec
+Time for epoch 9 is 0.22778058052062988 sec
+Time for epoch 10 is 0.22880339622497559 sec
+Batch 16 completed
+Time for epoch 1 is 0.22589659690856934 sec
+Time for epoch 2 is 0.22327303886413574 sec
+Time for epoch 3 is 0.22658586502075195 sec
+Time for epoch 4 is 0.22681331634521484 sec
+Time for epoch 5 is 0.22822785377502441 sec
+Time for epoch 6 is 0.22782492637634277 sec
+Time for epoch 7 is 0.22861933708190918 sec
+Time for epoch 8 is 0.22800016403198242 sec
+Time for epoch 9 is 0.22694826126098633 sec
+Time for epoch 10 is 0.23045849800109863 sec
+Batch 17 completed
+Time for epoch 1 is 0.2250056266784668 sec
+Time for epoch 2 is 0.22843694686889648 sec
+Time for epoch 3 is 0.22952938079833984 sec
+Time for epoch 4 is 0.23443984985351562 sec
+Time for epoch 5 is 0.22862482070922852 sec
+Time for epoch 6 is 0.2323753833770752 sec
+Time for epoch 7 is 0.23079919815063477 sec
+Time for epoch 8 is 0.23205304145812988 sec
+Time for epoch 9 is 0.23078441619873047 sec
+Time for epoch 10 is 0.2241051197052002 sec
+Batch 18 completed
+Time for epoch 1 is 0.22414445877075195 sec
+Time for epoch 2 is 0.22581696510314941 sec
+Time for epoch 3 is 0.2255103588104248 sec
+Time for epoch 4 is 0.22412800788879395 sec
+Time for epoch 5 is 0.22285699844360352 sec
+Time for epoch 6 is 0.23206329345703125 sec
+Time for epoch 7 is 0.2264096736907959 sec
+Time for epoch 8 is 0.2290818691253662 sec
+Time for epoch 9 is 0.22630953788757324 sec
+Time for epoch 10 is 0.22396135330200195 sec
+Batch 19 completed
+Time for epoch 1 is 0.2252655029296875 sec
+Time for epoch 2 is 0.2239210605621338 sec
+Time for epoch 3 is 0.23283982276916504 sec
+Time for epoch 4 is 0.2252664566040039 sec
+Time for epoch 5 is 0.22922730445861816 sec
+Time for epoch 6 is 0.22667694091796875 sec
+Time for epoch 7 is 0.22651982307434082 sec
+Time for epoch 8 is 0.22919487953186035 sec
+Time for epoch 9 is 0.22274184226989746 sec
+Time for epoch 10 is 0.22761750221252441 sec
+Batch 20 completed
+Time for epoch 1 is 0.22703170776367188 sec
+Time for epoch 2 is 0.2269117832183838 sec
+Time for epoch 3 is 0.22528862953186035 sec
+Time for epoch 4 is 0.2296125888824463 sec
+Time for epoch 5 is 0.22333121299743652 sec
+Time for epoch 6 is 0.22896647453308105 sec
+Time for epoch 7 is 0.22993159294128418 sec
+Time for epoch 8 is 0.2281491756439209 sec
+Time for epoch 9 is 0.22948598861694336 sec
+Time for epoch 10 is 0.22687506675720215 sec
+Batch 21 completed
+Time for epoch 1 is 0.23065590858459473 sec
+Time for epoch 2 is 0.22718191146850586 sec
+Time for epoch 3 is 0.22525572776794434 sec
+Time for epoch 4 is 0.22802233695983887 sec
+Time for epoch 5 is 0.22674131393432617 sec
+Time for epoch 6 is 0.23323273658752441 sec
+Time for epoch 7 is 0.23322796821594238 sec
+Time for epoch 8 is 0.23353362083435059 sec
+Time for epoch 9 is 0.22997760772705078 sec
+Time for epoch 10 is 0.22490191459655762 sec
+Batch 22 completed
+Time for epoch 1 is 0.22572970390319824 sec
+Time for epoch 2 is 0.2293083667755127 sec
+Time for epoch 3 is 0.2288379669189453 sec
+Time for epoch 4 is 0.22756671905517578 sec
+Time for epoch 5 is 0.22774910926818848 sec
+Time for epoch 6 is 0.22864055633544922 sec
+Time for epoch 7 is 0.22759556770324707 sec
+Time for epoch 8 is 0.2221376895904541 sec
+Time for epoch 9 is 0.23677659034729004 sec
+Time for epoch 10 is 0.2276921272277832 sec
+Batch 23 completed
+Time for epoch 1 is 0.22705292701721191 sec
+Time for epoch 2 is 0.2258439064025879 sec
+Time for epoch 3 is 0.22405195236206055 sec
+Time for epoch 4 is 0.22974014282226562 sec
+Time for epoch 5 is 0.2330641746520996 sec
+Time for epoch 6 is 0.22846317291259766 sec
+Time for epoch 7 is 0.22705650329589844 sec
+Time for epoch 8 is 0.23552751541137695 sec
+Time for epoch 9 is 0.22877073287963867 sec
+Time for epoch 10 is 0.22866153717041016 sec
+Batch 24 completed
+Time for epoch 1 is 0.2249617576599121 sec
+Time for epoch 2 is 0.22853684425354004 sec
+Time for epoch 3 is 0.22943592071533203 sec
+Time for epoch 4 is 0.22812271118164062 sec
+Time for epoch 5 is 0.2320106029510498 sec
+Time for epoch 6 is 0.22983694076538086 sec
+Time for epoch 7 is 0.2280895709991455 sec
+Time for epoch 8 is 0.22838521003723145 sec
+Time for epoch 9 is 0.22051310539245605 sec
+Time for epoch 10 is 0.2316446304321289 sec
+Batch 25 completed
+Time for epoch 1 is 0.22647881507873535 sec
+Time for epoch 2 is 0.22842121124267578 sec
+Time for epoch 3 is 0.23746204376220703 sec
+Time for epoch 4 is 0.2280290126800537 sec
+Time for epoch 5 is 0.22594952583312988 sec
+Time for epoch 6 is 0.23181772232055664 sec
+Time for epoch 7 is 0.22640061378479004 sec
+Time for epoch 8 is 0.2249128818511963 sec
+Time for epoch 9 is 0.2271709442138672 sec
+Time for epoch 10 is 0.22587823867797852 sec
+Batch 26 completed
+Time for epoch 1 is 0.22663664817810059 sec
+Time for epoch 2 is 0.231003999710083 sec
+Time for epoch 3 is 0.22661757469177246 sec
+Time for epoch 4 is 0.22684526443481445 sec
+Time for epoch 5 is 0.2325301170349121 sec
+Time for epoch 6 is 0.22569870948791504 sec
+Time for epoch 7 is 0.22564339637756348 sec
+Time for epoch 8 is 0.2238917350769043 sec
+Time for epoch 9 is 0.22779464721679688 sec
+Time for epoch 10 is 0.23275303840637207 sec
+Batch 27 completed
+Time for epoch 1 is 0.2256782054901123 sec
+Time for epoch 2 is 0.22562170028686523 sec
+Time for epoch 3 is 0.22694015502929688 sec
+Time for epoch 4 is 0.23138189315795898 sec
+Time for epoch 5 is 0.22594356536865234 sec
+Time for epoch 6 is 0.23001790046691895 sec
+Time for epoch 7 is 0.22578835487365723 sec
+Time for epoch 8 is 0.2245323657989502 sec
+Time for epoch 9 is 0.22772431373596191 sec
+Time for epoch 10 is 0.22874164581298828 sec
+Batch 28 completed
+Time for epoch 1 is 0.22583675384521484 sec
+Time for epoch 2 is 0.228560209274292 sec
+Time for epoch 3 is 0.22792816162109375 sec
+Time for epoch 4 is 0.23224663734436035 sec
+Time for epoch 5 is 0.2310633659362793 sec
+Time for epoch 6 is 0.23125720024108887 sec
+Time for epoch 7 is 0.22717046737670898 sec
+Time for epoch 8 is 0.2342379093170166 sec
+Time for epoch 9 is 0.22501683235168457 sec
+Time for epoch 10 is 0.22684955596923828 sec
+Batch 29 completed
+Time for epoch 1 is 0.2266368865966797 sec
+Time for epoch 2 is 0.22536659240722656 sec
+Time for epoch 3 is 0.2289597988128662 sec
+Time for epoch 4 is 0.229384183883667 sec
+Time for epoch 5 is 0.23197007179260254 sec
+Time for epoch 6 is 0.22527003288269043 sec
+Time for epoch 7 is 0.23533892631530762 sec
+Time for epoch 8 is 0.22553563117980957 sec
+Time for epoch 9 is 0.22611689567565918 sec
+Time for epoch 10 is 0.22668099403381348 sec
+Batch 30 completed
+Time for epoch 1 is 0.22487521171569824 sec
+Time for epoch 2 is 0.23017430305480957 sec
+Time for epoch 3 is 0.2250230312347412 sec
+Time for epoch 4 is 0.23166894912719727 sec
+Time for epoch 5 is 0.23367929458618164 sec
+Time for epoch 6 is 0.23071503639221191 sec
+Time for epoch 7 is 0.22784829139709473 sec
+Time for epoch 8 is 0.22807693481445312 sec
+Time for epoch 9 is 0.23500347137451172 sec
+Time for epoch 10 is 0.23176980018615723 sec
+Batch 31 completed
+Time for epoch 1 is 0.2258903980255127 sec
+Time for epoch 2 is 0.23035335540771484 sec
+Time for epoch 3 is 0.23639321327209473 sec
+Time for epoch 4 is 0.22557973861694336 sec
+Time for epoch 5 is 0.22989845275878906 sec
+Time for epoch 6 is 0.22471022605895996 sec
+Time for epoch 7 is 0.2287428379058838 sec
+Time for epoch 8 is 0.22629356384277344 sec
+Time for epoch 9 is 0.22370553016662598 sec
+Time for epoch 10 is 0.2267467975616455 sec
+Batch 32 completed
+Time for epoch 1 is 0.2273392677307129 sec
+Time for epoch 2 is 0.23042726516723633 sec
+Time for epoch 3 is 0.22877025604248047 sec
+Time for epoch 4 is 0.22663021087646484 sec
+Time for epoch 5 is 0.2233896255493164 sec
+Time for epoch 6 is 0.2245638370513916 sec
+Time for epoch 7 is 0.23020720481872559 sec
+Time for epoch 8 is 0.22775888442993164 sec
+Time for epoch 9 is 0.23319220542907715 sec
+Time for epoch 10 is 0.23351049423217773 sec
+Batch 33 completed
+Time for epoch 1 is 0.22589564323425293 sec
+Time for epoch 2 is 0.2316293716430664 sec
+Time for epoch 3 is 0.22935700416564941 sec
+Time for epoch 4 is 0.22530651092529297 sec
+Time for epoch 5 is 0.22737741470336914 sec
+Time for epoch 6 is 0.22580647468566895 sec
+Time for epoch 7 is 0.22898077964782715 sec
+Time for epoch 8 is 0.23523855209350586 sec
+Time for epoch 9 is 0.22860455513000488 sec
+Time for epoch 10 is 0.22571611404418945 sec
+Batch 34 completed
+Time for epoch 1 is 0.22581005096435547 sec
+Time for epoch 2 is 0.22457361221313477 sec
+Time for epoch 3 is 0.22321629524230957 sec
+Time for epoch 4 is 0.2260425090789795 sec
+Time for epoch 5 is 0.23032760620117188 sec
+Time for epoch 6 is 0.2295670509338379 sec
+Time for epoch 7 is 0.2279987335205078 sec
+Time for epoch 8 is 0.22653889656066895 sec
+Time for epoch 9 is 0.22521114349365234 sec
+Time for epoch 10 is 0.23146486282348633 sec
+Batch 35 completed
+Time for epoch 1 is 0.22623348236083984 sec
+Time for epoch 2 is 0.22525358200073242 sec
+Time for epoch 3 is 0.22508978843688965 sec
+Time for epoch 4 is 0.2301177978515625 sec
+Time for epoch 5 is 0.22974896430969238 sec
+Time for epoch 6 is 0.22928738594055176 sec
+Time for epoch 7 is 0.22504687309265137 sec
+Time for epoch 8 is 0.2289714813232422 sec
+Time for epoch 9 is 0.22844934463500977 sec
+Time for epoch 10 is 0.227034330368042 sec
+Batch 36 completed
+Time for epoch 1 is 0.22776079177856445 sec
+Time for epoch 2 is 0.22678613662719727 sec
+Time for epoch 3 is 0.2287578582763672 sec
+Time for epoch 4 is 0.22994780540466309 sec
+Time for epoch 5 is 0.22796106338500977 sec
+Time for epoch 6 is 0.2291431427001953 sec
+Time for epoch 7 is 0.2255687713623047 sec
+Time for epoch 8 is 0.23763251304626465 sec
+Time for epoch 9 is 0.2275371551513672 sec
+Time for epoch 10 is 0.22705888748168945 sec
+Batch 37 completed
+valid loss at iteration 0
+tf.Tensor(4.689665e-27, shape=(), dtype=float32)
+valid loss at iteration 1
+tf.Tensor(0.0, shape=(), dtype=float32)
+valid loss at iteration 2
+tf.Tensor(8.491856e-37, shape=(), dtype=float32)
+valid loss at iteration 3
+tf.Tensor(0.04125772, shape=(), dtype=float32)
+valid loss at iteration 4
+tf.Tensor(3.755342e-32, shape=(), dtype=float32)
