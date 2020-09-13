@@ -67,24 +67,24 @@ class DCGAN(GAN):
         hence: discrim_input_shape = self.output_image_shape
 
         '''
-        discrim_input_shape = (256,256,1)
+        discrim_input_shape = (512,512,3)
         discrim = keras.Sequential()
 
         # Input --> (256,256,1)
         # Output --> (128,128,discrim_num_channels)
-        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)) )
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)) )
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (128,128, discrim_num_channels)
         # Output --> (64,64, discrim_num_channels)
-        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
         # Input --> (64,64, discrim_num_channels)
         # Output --> (32,32, discrim_num_channels)
-        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same',input_shape=discrim_input_shape, kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
+        discrim.add(layers.Conv2D(self.discrim_num_channels,(self.discrim_filter_size,self.discrim_filter_size),strides=(2,2),padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.05), activity_regularizer=tf.keras.regularizers.l2(0.05)))
         discrim.add(layers.LeakyReLU())
         discrim.add(layers.Dropout(0.3))
 
@@ -145,7 +145,7 @@ class DCGAN(GAN):
         # 1 channel for BW image output 
         # Input  --> (128,128,1)
         # Output --> (256,256,1)
-        model.add(layers.Conv2DTranspose(1, (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False, activation='tanh'))
+        model.add(layers.Conv2DTranspose(3 , (self.gen_filter_size,self.gen_filter_size), strides=(2,2), padding='same', use_bias=False, activation='tanh'))
         return model 
 
     

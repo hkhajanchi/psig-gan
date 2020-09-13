@@ -39,8 +39,8 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr, gen_train_freq, di
         os.mkdir(batch_save_path)
         # Extract image tensor and disregard labels
         real_data,_ = data_batch.next()
-        #---- normalize images --- 
-        real_data = util.normalize(real_data)
+        #---- crop center frame ofimages --- 
+        real_data = util.cropCentralImage(real_data, 0.25)
         start = time.time()
 
         for epoch in range(epochs):
@@ -55,15 +55,15 @@ def train (GAN, data_batch, epochs, run_dir, gen_lr, disc_lr, gen_train_freq, di
 
 def trainLoop(num_epochs, batch_size, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger):
         # Create run directory for current training run 
-        os.chdir(os.path.expanduser('~') + '/psig-gan/runs/')
+        os.chdir(os.path.expanduser('~') + '/Research/psig-gan/runs/')
         run_dir = str(datetime.datetime.now()).replace(' ','',) + "--" + "disc_lr"+ str(disc_lr) + " " + "gen_lr"+ str(gen_lr) + " " + "gen_train_freq" + str(gen_train_freq) + " " + "disc_train_freq" + str(disc_train_freq) + " "  + "num_epochs"+ str(num_epochs)
 
         os.mkdir(run_dir)
         # Instantiate GAN
-        gan = DCGAN(latent_shape=100, output_image_shape=256, num_gen_images=batch_size, gen_filter_size=5, discrim_filter_size=5, gen_num_channels=128, discrim_num_channels=64)
+        gan = DCGAN(latent_shape=100, output_image_shape=512, num_gen_images=batch_size, gen_filter_size=6, discrim_filter_size=5, gen_num_channels=128, discrim_num_channels=64)
         # Load real grassweeds image data 
-        data_path = '/home/data/dcgan-data/'
-        data_batch = util.createDataBatch(data_path,batch_size)
+        data_path = '/home/data/GrassClover/'
+        data_batch = util.createDataBatch(data_path,batch_size,512)
         
         # Execute training loop
         train(gan, data_batch, num_epochs, run_dir, gen_lr, disc_lr, gen_train_freq, disc_train_freq, logger)
