@@ -13,7 +13,8 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator, save_img
 
 from PIL import Image 
 
-def createDataBatch(img_dir,batch_size):
+
+def createDataBatch(img_dir,batch_size,scaleDim):
 
     '''
     Creates a tf.keras image dataset based off of the img_dir param
@@ -54,7 +55,7 @@ def createDataBatch(img_dir,batch_size):
     # Create image dataset using datagen.flow_from_directory()
     dataset = datagen.flow_from_directory(
                                         img_dir,
-                                        target_size=(256, 256),
+                                        target_size=(2000,2000),
                                         color_mode="rgb",
                                         classes=None,
                                         class_mode="binary",
@@ -101,8 +102,13 @@ def normalize(image_tensor):
         images.append(image)
 
      images = tf.convert_to_tensor(images)
-    
      return images 
+
+def cropCentralImage(image_tensor,frac): 
+    '''
+    Crops the central fraction of the image tensor 
+    '''
+    return tf.image.central_crop(image_tensor, frac)
 
 if __name__ == "__main__":
 
@@ -110,12 +116,15 @@ if __name__ == "__main__":
     scrap test code 
     ''' 
 
-    path = '/home/data/dcgan-data/'
+    path = '/home/data/GrassClover/'
     batch_size = 64
-    iter = createDataBatch(path, batch_size)
+    iter = createDataBatch(path, batch_size, 512)
 
     images,_ = iter.next()
     print(images.shape)
 
-    normalized = normalize(images)
-    print(normalized.shape)
+    things = cropCentralImage(images, 0.25)
+    print(things.shape)
+
+    save_image_batch(things, os.getcwd()+'/test')
+
